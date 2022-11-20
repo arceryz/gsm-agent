@@ -82,5 +82,5 @@ def parse_request(req, auth: Auth, gsm: GSM_Device):
         finalargs = [ "./scripts/{:s}".format(cmd) ] + args[1:]
         print("Executing {:s}".format(str(finalargs)))
         result = subprocess.run(finalargs, capture_output=True)
-        output = result.stdout.decode("utf-8")
+        output = result.stdout.decode("utf-8") + result.stderr.decode("utf-8")
         gsm.send_sms(nr, output)
