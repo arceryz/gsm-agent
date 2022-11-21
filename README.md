@@ -6,13 +6,13 @@ SMS. Supports authority-level checking and users/usernames for security.
 
 Give this daemon a working directory (/usr/share/gsm-agent) and put two files in there:
 - `users` file csv in format `user, phonenumber, authoritylevel` where authority
-level is an integer that grants the user privilige to run certain commands.
+level is an integer that grants the user privilege to run certain commands.
 Add a user `unknown` for the privileges of unregistered users.
 
 - `auth` file csv in format `command, authoritylevel` which tells which commands are allowed to be run
 under which minimum authoritylevel. E.g, an authority of 0 tells that anyone can run this command.
 
-- Put the scripts you want to run remotely the `/scripts` subdirectory (you can change this).
+- Put the scripts you want to run remotely in the `/scripts` subdirectory (you can change this).
 
 These files are currently hard-coded in the python. You can edit [gsm-agent.py](gsm-agent.py) to change
 the filenames if you want. By default, the `unknown` user is used as fallback if no user is present,
@@ -23,7 +23,7 @@ The way that this daemon works is
 The SMS messages should be formatted as `[command] args...` as a normal linux command.
 2. The server checks if the sending phonenumber is a registered user, if so uses that users
 authority level, otherwise falls back to the authority of `unknown` user.
-3. If `authority > minauthority` of the command, then the command is executed and output is captured.
+3. If `authority >= minauthority` of the command, then the command is executed and output is captured.
 4. The command stdout+stderr is echoed back to the sender as an SMS message. Make sure you have enough
 prepaid on your SIM card.
 5. The user receives the output.
