@@ -1,6 +1,7 @@
 # Core GSM-agent library.
 # Contains all the necessary components of gsm-agent.
 from atlib import *
+from configparser import ConfigParser
 import subprocess
 
 
@@ -17,6 +18,34 @@ def read_csv(path):
             break
     file.close()
     return lines
+
+
+class Config:
+    """ Class that loads the daemon parameters from a config file. """
+
+    def __init__(self):
+        self.poll_interval = 5.0
+        self.serial_port = "/dev/serial0"
+        self.users_file = "users"
+        self.auth_file = "auth"
+
+
+    def load_standard(self):
+        """ Load configuration from standard path. """
+        self.load("/etc/gsm-agent/gsm-agent.ini")
+        return self
+
+
+    def load(self, path):
+        """ Load file from path. """
+        print("Loading config file from {:s}".format(path))
+        cfg = ConfigParser()
+        cfg.read(path)
+        self.poll_interval = float(cfg["Agent"]["poll_interval"])
+        self.serial_port = cfg["Agent"]["serial_port"]
+        self.users_file = cfg["Agent"]["users_file"]
+        self.auth_file = cfg["Agent"]["auth_file"]
+        return self
 
 
 class Auth:
