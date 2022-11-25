@@ -10,17 +10,22 @@ from core import *
 from time import sleep
 
 
-# This is the device from which to listen.
+# Load the configuration.
+print("GSM Agent loading")
 conf = Config().load_standard()
+if conf == None:
+    print("Invalid config file -> Aborting")
+userdb = UserDB().load(conf.users_file)
 gsm = GSM_Device(conf.serial_port)
-auth = Auth(conf.users_file, conf.auth_file)
 
 # Poll incoming messages and pass them to the request parser.
 print("GSM Agent listening on PHONE")
 while True:
     requests = gsm.receive_sms(SMS_Group.ALL)
     for req in requests:
-        parse_request(req, auth, gsm)
+        parse_request(req, gsm, userdb, conf)
+
     # Clear requests.
-    gsm.delete_read_sms()
+    for i in range(3):
+        print(gsm.delete_read_sms())
     sleep(conf.poll_interval)
